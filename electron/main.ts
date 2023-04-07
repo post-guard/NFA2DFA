@@ -1,5 +1,4 @@
 import {app, BrowserWindow} from 'electron'
-import * as process from "process";
 
 function createMainWindow() {
     const window = new BrowserWindow({
