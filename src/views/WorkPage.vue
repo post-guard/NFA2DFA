@@ -3,7 +3,7 @@
 
     <div class="NFABox">
 
-      <div class="DFADivideLine">
+      <div class="NFADivideLine">
         <a-divider style="border-color: #181818" >
           <h2>
             NFA
@@ -32,6 +32,7 @@
                  size="large"
                  allow-clear
                  addon-before="Q"
+                 @change = "Q_NFA_change"
                  style="
                         position: absolute;
                         width: 200px;
@@ -72,7 +73,7 @@
                   :options = "q0_NFA_option"
 
                   size="large"
-                  allow-clear
+
                   addon-before="q0"
                   style="
                         position: absolute;
@@ -83,7 +84,35 @@
         </a-select>
 
 
-        <a-input v-model:value="F_NFA"
+        <a-input
+            size="large"
+            :disabled = true
+            addon-before="F"
+            style="
+                        position: absolute;
+                        width: 0px;
+                        top: 245px;
+                        left: 40px;"
+        >
+        </a-input>
+
+        <a-select v-model:value="F_NFA"
+                  id="F_NFA"
+                  :options = "F_NFA_option"
+
+                  size="large"
+
+                  addon-before="F"
+                  style="
+                        position: absolute;
+                        width: 170px;
+                        top: 245px;
+                        left: 70px;"
+        >
+        </a-select>
+
+
+<!--        <a-input v-model:value="F_NFA"
                  id="F_NFA"
 
                  placeholder="eg: q3,q4,..."
@@ -96,7 +125,7 @@
                         top: 245px;
                         left: 40px;"
         >
-        </a-input>
+        </a-input>-->
 
       </div>
 
@@ -119,15 +148,30 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import type {SelectProps} from "ant-design-vue";
+import {deconcatenation,transferJson} from "../views/function";
 
-const Q_DFA = ref("");
-const q0_NFA_option = ref<SelectProps['options']>([
-    {
-  /*value : 'q0',
-  label : 'q0',*/
-      //TODO:需要编写一个对Q的输入进行分词的方法，然后导入options选择列表中
-},
-]);
+const Q_NFA = ref("");
+const T_NFA = ref("");
+const q0_NFA = ref("");
+const F_NFA = ref("");
+const q0_NFA_option = ref<SelectProps['options']>();
+const F_NFA_option = ref<SelectProps['options']>();
+
+const Q_NFA_change=()=>{
+
+  //if(Q_NFA.value!==''){
+
+    const strarray = deconcatenation(Q_NFA.value);
+
+    console.log(JSON.parse(transferJson(strarray)));
+
+    q0_NFA_option.value = JSON.parse(transferJson(strarray));
+
+    F_NFA_option.value = JSON.parse(transferJson(strarray));
+  //}
+
+
+}
 </script>
 
 <style scoped>
@@ -148,7 +192,7 @@ const q0_NFA_option = ref<SelectProps['options']>([
 
 }
 
-.DFADivideLine{
+.NFADivideLine{
 
 
   position: absolute;
