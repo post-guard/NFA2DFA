@@ -48,6 +48,7 @@
                  size="large"
                  allow-clear
                  addon-before="T"
+                 @change = "T_NFA_change"
                  style="
                         position: absolute;
                         width: 200px;
@@ -70,7 +71,7 @@
 
         <a-select v-model:value="q0_NFA"
                   id="q0_NFA"
-                  :options = "q0_NFA_option"
+                  :options = "Q_NFA_option"
 
                   size="large"
 
@@ -98,7 +99,7 @@
 
         <a-select v-model:value="F_NFA"
                   id="F_NFA"
-                  :options = "F_NFA_option"
+                  :options = "Q_NFA_option"
 
                   size="large"
 
@@ -112,20 +113,67 @@
         </a-select>
 
 
-<!--        <a-input v-model:value="F_NFA"
-                 id="F_NFA"
-
-                 placeholder="eg: q3,q4,..."
-                 size="large"
-                 allow-clear
-                 addon-before="F"
-                 style="
+        <a-input
+            size="large"
+            :disabled = true
+            addon-before="δ"
+            style="
                         position: absolute;
-                        width: 200px;
-                        top: 245px;
-                        left: 40px;"
+                        width: 0px;
+                        top: 35px;
+                        left: 270px;"
         >
-        </a-input>-->
+        </a-input>
+
+        <a-select   v-model:value="delta_start_NFA"
+                    id="delta_start_NFA"
+                    :options = "Q_NFA_option"
+
+                    size="large"
+                    placeholder = "start"
+
+                    style="
+                        position: absolute;
+                        width: 75px;
+                        top: 35px;
+                        left: 300px;"
+        >
+
+        </a-select>
+
+
+        <a-select   v-model:value="delta_sign_NFA"
+                    id="delta_sign_NFA"
+                    :options = "T_NFA_option"
+
+                    size="large"
+                    placeholder = "sign"
+
+                    style="
+                        position: absolute;
+                        width: 75px;
+                        top: 35px;
+                        left: 375px;"
+        >
+
+        </a-select>
+
+
+        <a-select   v-model:value="delta_end_NFA"
+                    id="delta_end_NFA"
+                    :options = "Q_NFA_option"
+
+                    size="large"
+                    placeholder = "end"
+
+                    style="
+                        position: absolute;
+                        width: 75px;
+                        top: 35px;
+                        left: 450px;"
+        >
+
+        </a-select>
 
       </div>
 
@@ -154,22 +202,37 @@ const Q_NFA = ref("");
 const T_NFA = ref("");
 const q0_NFA = ref("");
 const F_NFA = ref("");
-const q0_NFA_option = ref<SelectProps['options']>();
-const F_NFA_option = ref<SelectProps['options']>();
+const Q_NFA_option = ref<SelectProps['options']>();
+const T_NFA_option = ref<SelectProps['options']>();
 
 const Q_NFA_change=()=>{
 
   //if(Q_NFA.value!==''){
 
-    const strarray = deconcatenation(Q_NFA.value);
+    const strarray_Q = deconcatenation(Q_NFA.value);
 
-    console.log(JSON.parse(transferJson(strarray)));
 
-    q0_NFA_option.value = JSON.parse(transferJson(strarray));
+    //console.log(JSON.parse(transferJson(strarray_Q)));
 
-    F_NFA_option.value = JSON.parse(transferJson(strarray));
+    Q_NFA_option.value = JSON.parse(transferJson(strarray_Q));
+
+
+
+}
+
+const T_NFA_change=()=>{
+
+  //if(Q_NFA.value!==''){
+
+
+  const strarray_T = deconcatenation(T_NFA.value);
+
+  //console.log(JSON.parse(transferJson(strarray_Q)));
+
+
+
+  T_NFA_option.value = JSON.parse(transferJson(strarray_T));
   //}
-
 
 }
 </script>
