@@ -4,7 +4,7 @@
     <div class="NFABox">
 
       <div class="NFADivideLine">
-        <a-divider style="border-color: #181818" >
+        <a-divider style="border-color: #181818">
           <h2>
             NFA
           </h2>
@@ -32,7 +32,7 @@
                  size="large"
                  allow-clear
                  addon-before="Q"
-                 @change = "Q_NFA_change"
+                 @change="QInputChange"
                  style="
                         position: absolute;
                         width: 200px;
@@ -48,7 +48,7 @@
                  size="large"
                  allow-clear
                  addon-before="T"
-                 @change = "T_NFA_change"
+                 @change="TInputChange"
                  style="
                         position: absolute;
                         width: 200px;
@@ -59,7 +59,7 @@
 
         <a-input
             size="large"
-            :disabled = true
+            :disabled=true
             addon-before="q0"
             style="
                         position: absolute;
@@ -71,7 +71,7 @@
 
         <a-select v-model:value="q0_NFA"
                   id="q0_NFA"
-                  :options = "Q_NFA_option"
+                  :options="Q_NFA_option"
 
                   size="large"
 
@@ -87,7 +87,7 @@
 
         <a-input
             size="large"
-            :disabled = true
+            :disabled=true
             addon-before="F"
             style="
                         position: absolute;
@@ -99,7 +99,7 @@
 
         <a-select v-model:value="F_NFA"
                   id="F_NFA"
-                  :options = "Q_NFA_option"
+                  :options="Q_NFA_option"
 
                   size="large"
 
@@ -115,7 +115,7 @@
 
         <a-input
             size="large"
-            :disabled = true
+            :disabled=true
             addon-before="δ"
             style="
                         position: absolute;
@@ -125,14 +125,14 @@
         >
         </a-input>
 
-        <a-select   v-model:value="delta_start_NFA"
-                    id="delta_start_NFA"
-                    :options = "Q_NFA_option"
+        <a-select v-model:value="delta_start_NFA"
+                  id="delta_start_NFA"
+                  :options="Q_NFA_option"
 
-                    size="large"
-                    placeholder = "start"
+                  size="large"
+                  placeholder="start"
 
-                    style="
+                  style="
                         position: absolute;
                         width: 75px;
                         top: 35px;
@@ -142,14 +142,14 @@
         </a-select>
 
 
-        <a-select   v-model:value="delta_sign_NFA"
-                    id="delta_sign_NFA"
-                    :options = "T_NFA_option"
+        <a-select v-model:value="delta_sign_NFA"
+                  id="delta_sign_NFA"
+                  :options="T_NFA_option"
 
-                    size="large"
-                    placeholder = "sign"
+                  size="large"
+                  placeholder="sign"
 
-                    style="
+                  style="
                         position: absolute;
                         width: 75px;
                         top: 35px;
@@ -159,14 +159,14 @@
         </a-select>
 
 
-        <a-select   v-model:value="delta_end_NFA"
-                    id="delta_end_NFA"
-                    :options = "Q_NFA_option"
+        <a-select v-model:value="delta_end_NFA"
+                  id="delta_end_NFA"
+                  :options="Q_NFA_option"
 
-                    size="large"
-                    placeholder = "end"
+                  size="large"
+                  placeholder="end"
 
-                    style="
+                  style="
                         position: absolute;
                         width: 75px;
                         top: 35px;
@@ -182,7 +182,7 @@
 
     <div class="DFABox">
       <div class="DFADivideLine">
-        <a-divider style="border-color: #181818 " >
+        <a-divider style="border-color: #181818 ">
           <h2>
             DFA
           </h2>
@@ -196,7 +196,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import type {SelectProps} from "ant-design-vue";
-import {deconcatenation,transferJson} from "../views/function";
+import type {DefaultOptionType} from "ant-design-vue/es/vc-cascader";
 
 const Q_NFA = ref("");
 const T_NFA = ref("");
@@ -205,40 +205,47 @@ const F_NFA = ref("");
 const Q_NFA_option = ref<SelectProps['options']>();
 const T_NFA_option = ref<SelectProps['options']>();
 
-const Q_NFA_change=()=>{
+function QInputChange() {
+  const states = Q_NFA.value.split(/[,，]/);
 
-  //if(Q_NFA.value!==''){
+  let options: DefaultOptionType[] = [];
 
-    const strarray_Q = deconcatenation(Q_NFA.value);
+  for (let state of states) {
+    if (state.length == 0) {
+      continue;
+    }
 
+    options.push({
+      label: state,
+      value: state
+    });
+  }
 
-    //console.log(JSON.parse(transferJson(strarray_Q)));
-
-    Q_NFA_option.value = JSON.parse(transferJson(strarray_Q));
-
-
-
+  Q_NFA_option.value = options;
 }
 
-const T_NFA_change=()=>{
+function TInputChange() {
+  const terminators = T_NFA.value.split(/[,，]/);
 
-  //if(Q_NFA.value!==''){
+  let options: DefaultOptionType[] = [];
 
+  for (let terminator of terminators) {
+    if (terminator.length == 0) {
+      continue;
+    }
 
-  const strarray_T = deconcatenation(T_NFA.value);
+    options.push({
+      label: terminator,
+      value: terminator
+    });
+  }
 
-  //console.log(JSON.parse(transferJson(strarray_Q)));
-
-
-
-  T_NFA_option.value = JSON.parse(transferJson(strarray_T));
-  //}
-
+  T_NFA_option.value = options;
 }
 </script>
 
 <style scoped>
-.workPage{
+.workPage {
   position: absolute;
   width: 1080px;
   height: 720px;
@@ -246,16 +253,16 @@ const T_NFA_change=()=>{
 
 }
 
-.NFABox{
+.NFABox {
   position: absolute;
   width: 540px;
   height: 720px;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
 
 }
 
-.NFADivideLine{
+.NFADivideLine {
 
 
   position: absolute;
@@ -263,20 +270,20 @@ const T_NFA_change=()=>{
   width: 540px;
   height: 40px;
   top: 360px;
-  left: 0px;
+  left: 0;
 
 }
 
-.DFABox{
+.DFABox {
   position: absolute;
   width: 540px;
   height: 720px;
-  top: 0px;
+  top: 0;
   left: 540px;
 
 }
 
-.DFADivideLine{
+.DFADivideLine {
 
 
   position: absolute;
@@ -284,11 +291,11 @@ const T_NFA_change=()=>{
   width: 540px;
   height: 40px;
   top: 360px;
-  left: 0px;
+  left: 0;
 
 }
 
-.verticalDivider_up{
+.verticalDivider_up {
   position: absolute;
 
   height: 340px;
@@ -297,7 +304,7 @@ const T_NFA_change=()=>{
   left: 530px;
 }
 
-.verticalDivider_down{
+.verticalDivider_down {
   position: absolute;
 
   height: 340px;
@@ -306,13 +313,13 @@ const T_NFA_change=()=>{
   left: 530px;
 }
 
-.NFAInput{
+.NFAInput {
   position: absolute;
 
   height: 320px;
   width: 540px;
   top: 400px;
-  left: 0px;
+  left: 0;
 }
 
 </style>
