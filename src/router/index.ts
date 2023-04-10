@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import WorkPage from '../views/WorkPage.vue'
+import AboutView from "@/views/AboutView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,6 +10,11 @@ const router = createRouter({
       name: 'workpage',
       component: WorkPage
     },
+    {
+      path: '/about',
+      name: 'about',
+      component: AboutView
+    }
   ]
 })
 

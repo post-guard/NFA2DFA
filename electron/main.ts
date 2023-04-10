@@ -1,11 +1,16 @@
 import {app, BrowserWindow} from 'electron'
+import * as path from "path";
 
 function createMainWindow() {
     const window = new BrowserWindow({
         title: "MainWindow",
         width: 1080,
         height: 720,
-        useContentSize: true, //这个设置为真时，设置的尺寸将会是不包括菜单栏的窗口大小
+        //这个设置为真时，设置的尺寸将会是不包括菜单栏的窗口大小
+        useContentSize: true,
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js")
+        }
     });
 
     if (process.env.VITE_DEV_SERVER_URL) {
