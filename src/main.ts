@@ -12,4 +12,4 @@ app.use(router)
 app.use(anti)
 app.mount('#app')
 
-router.push("/about")
+
