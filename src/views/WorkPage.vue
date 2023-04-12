@@ -63,7 +63,7 @@
             addon-before="q0"
             style="
                         position: absolute;
-                        width: 0px;
+                        width: 0;
                         top: 175px;
                         left: 40px;"
         >
@@ -91,7 +91,7 @@
             addon-before="F"
             style="
                         position: absolute;
-                        width: 0px;
+                        width: 0;
                         top: 245px;
                         left: 40px;"
         >
@@ -100,15 +100,14 @@
         <a-select v-model:value="F_NFA"
                   id="F_NFA"
                   :options="Q_NFA_option"
-
+                  mode="multiple"
                   size="large"
-
+                  style="position: absolute;
+                          width: 170px;
+                          top: 245px;
+                          left: 70px;"
                   addon-before="F"
-                  style="
-                        position: absolute;
-                        width: 170px;
-                        top: 245px;
-                        left: 70px;"
+
         >
         </a-select>
 
@@ -119,13 +118,72 @@
             addon-before="δ"
             style="
                         position: absolute;
-                        width: 0px;
+                        width: 0;
                         top: 35px;
                         left: 270px;"
         >
         </a-input>
 
-        <a-select v-model:value="delta_start_NFA"
+        <a-button class="button_addList_NFA"
+                  size = "large"
+                  @click = "button_addList_NFA_click"
+                  style="width : 60px;
+                         top : 34px;
+                         left : 300px"
+        >
+            +
+        </a-button>
+
+        <a-table v-model:value="delta_list_NFA"
+                 class = "delta_list_NFA"
+                 size="large"
+                 :data-source="delta_list_NFA_data"
+                 :columns="delta_list_NFA_columns"
+                 :scroll="{ y: 125 }"
+                 :pagination=false
+                 style="width: 240px;
+                        height: 0;
+                        top : 65px;
+                        left: 270px;
+                        margin: 0"
+        >
+            <template #bodyCell="{column,record}">
+
+                <a-select
+                        placeholder = "A"
+                        v-if = "column.key === 'start'"
+                        v-model:value = "record.start"
+                        :options = "Q_NFA_option"
+                >
+                </a-select>
+
+                <a-select
+                        placeholder = "2"
+                        v-if = "column.key === 'state'"
+                        v-model:value = "record.state"
+                        :options = "T_NFA_option"
+                >
+                </a-select>
+
+                <a-select
+                        placeholder = "B"
+                        v-if = "column.key === 'end'"
+                        v-model:value = "record.end"
+                        :options = "Q_NFA_option"
+                >
+                </a-select>
+
+            </template>
+
+        </a-table>
+
+
+
+
+
+
+
+<!--        <a-select v-model:value="delta_start_NFA"
                   id="delta_start_NFA"
                   :options="Q_NFA_option"
 
@@ -173,7 +231,7 @@
                         left: 450px;"
         >
 
-        </a-select>
+        </a-select>-->
 
       </div>
 
@@ -181,6 +239,7 @@
     </div>
 
     <div class="DFABox">
+
       <div class="DFADivideLine">
         <a-divider style="border-color: #181818 ">
           <h2>
@@ -188,6 +247,9 @@
           </h2>
 
         </a-divider>
+
+
+
       </div>
     </div>
   </div>
@@ -204,6 +266,42 @@ const q0_NFA = ref("");
 const F_NFA = ref("");
 const Q_NFA_option = ref<SelectProps['options']>();
 const T_NFA_option = ref<SelectProps['options']>();
+
+const delta_list_NFA_data = ref<{start: string, state: string, end: string}[]>([]);
+//NFA_LIST
+const delta_list_NFA_columns = ref([
+    {
+        title: 'start',
+        dataIndex: 'start',
+        key: 'start',
+        customHeaderCell: () => ({
+            style: {
+                textAlign: 'center',  //头部单元格水平居中
+            },
+        }),
+    },
+    {
+        title: 'state',
+        dataIndex: 'state',
+        key: 'state',
+        customHeaderCell: () => ({
+            style: {
+                textAlign: 'center',  //头部单元格水平居中
+            },
+        }),
+    },
+    {
+        title: 'end',
+        dataIndex: 'end',
+        key: 'end',
+        customHeaderCell: () => ({
+            style: {
+                textAlign: 'center',  //头部单元格水平居中
+            },
+        }),
+    },
+]);
+
 
 function QInputChange() {
   const states = Q_NFA.value.split(/[,，]/);
@@ -242,9 +340,20 @@ function TInputChange() {
 
   T_NFA_option.value = options;
 }
+
+
+function button_addList_NFA_click(){
+
+        delta_list_NFA_data.value.push({
+            start : '',
+            state : '',
+            end : ''
+        })
+
+}
 </script>
 
-<style scoped>
+<style  scoped>
 .workPage {
   position: absolute;
   width: 1080px;
@@ -320,6 +429,60 @@ function TInputChange() {
   width: 540px;
   top: 400px;
   left: 0;
+}
+
+
+
+
+
+
+
+
+:deep(.ant-select-selection--multiple .ant-select-selection__rendered) {
+    margin-left: 5px;
+    margin-bottom: -3px;
+    height: auto;
+    width: 100px;
+    max-height: 30px;
+    max-width: 200px;
+    overflow: auto;
+    overflow-y: hidden;
+}
+:deep(.ant-select-selection--multiple .ant-select-selection__choice ){
+    overflow: initial;
+}
+
+:deep(.ant-select ul,
+.ant-select ol ){
+    display: flex;
+}
+.ant-select-selection--multiple > ul > li,
+.ant-select-selection--multiple .ant-select-selection__rendered > ul > li {
+    margin-top: 3px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 14px;
+    width: auto;
+    max-height: 200px;
+}
+:deep(.ant-select-search--inline .ant-select-search__field__wrap){
+    max-width: 0 !important;
+}
+:deep(.ant-select-selection__rendered::-webkit-scrollbar){
+
+    height: 5px;
+}
+:deep(.ant-select-selection__rendered::-webkit-scrollbar-thumb ){
+
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: lightskyblue;
+}
+:deep(.ant-select-selection__rendered::-webkit-scrollbar-track ){
+
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, .1);
+    border-radius: 10px;
+    background: #ededed;
 }
 
 </style>
