@@ -5,7 +5,7 @@ export interface IGraphvizPacket {
 }
 
 export interface IElectronAPI {
-    invokeGraphviz: (dotString: string) => IGraphvizPacket;
+    invokeGraphviz: (dotString: string) => Promise<IGraphvizPacket>;
     ping: (value: string) => Promise<string>;
 }
 

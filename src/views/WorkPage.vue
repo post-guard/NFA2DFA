@@ -74,7 +74,7 @@
                   :options="Q_NFA_option"
 
                   size="large"
-
+                  @change="q0InputChange"
                   addon-before="q0"
                   style="
                         position: absolute;
@@ -103,7 +103,7 @@
                   mode="multiple"
                   size="large"
                   :max-tag-count = 2
-
+                  @change="FInputChange"
 
         >
         </a-select>
@@ -148,6 +148,7 @@
                  :columns="delta_list_NFA_columns"
                  :scroll="{ y: 125 }"
                  :pagination=false
+
                  style="width: 240px;
                         height: 0;
                         top : 65px;
@@ -161,14 +162,16 @@
                         v-if = "column.key === 'start'"
                         v-model:value = "record.start"
                         :options = "Q_NFA_option"
+                        @change="DeltaInputChange"
                 >
                 </a-select>
 
                 <a-select
                         placeholder = "2"
-                        v-if = "column.key === 'state'"
-                        v-model:value = "record.state"
+                        v-if = "column.key === 'input'"
+                        v-model:value = "record.input"
                         :options = "T_NFA_option"
+                        @change="DeltaInputChange"
                 >
                 </a-select>
 
@@ -177,6 +180,7 @@
                         v-if = "column.key === 'end'"
                         v-model:value = "record.end"
                         :options = "Q_NFA_option"
+                        @change="DeltaInputChange"
                 >
                 </a-select>
 
@@ -213,12 +217,25 @@
         <a-descriptions bordered
                         size="small"
                         :column=2
-
                         class="description_DFA">
-            <a-descriptions-item label="Q" :span = "1">q1,q2,q3,q4,q5</a-descriptions-item>
-            <a-descriptions-item label="T" :span = "1">q1,q2,q3</a-descriptions-item>
-            <a-descriptions-item label="q0" :span = "1">q0</a-descriptions-item>
-            <a-descriptions-item label="F" :span = "1">q1,q3</a-descriptions-item>
+            <a-descriptions-item label="Q" :span = "1"></a-descriptions-item>
+            <a-descriptions-item label="T" :span = "1"></a-descriptions-item>
+            <a-descriptions-item label="q0" :span = "1"></a-descriptions-item>
+            <a-descriptions-item label="F" :span = "1"></a-descriptions-item>
+            <a-descriptions-item label="δ" :span = "2">
+
+                <a-table v-model:value="delta_list_DFA"
+                         class = "delta_list_DFA"
+                         size="large"
+                         :data-source="delta_list_DFA_data"
+                         :columns="delta_list_NFA_columns"
+                         :scroll="{ y: 100 }"
+                         :pagination=false
+                         >
+
+                </a-table>
+
+            </a-descriptions-item>
         </a-descriptions>
     </div>
 
@@ -227,7 +244,7 @@
                 @click = "transfer"
                 style="width: 120px;
                        top:435px;
-                       left: 480px;             "
+                       left: 480px;"
                 >
           <template #icon>
               <ArrowRightOutlined/>
@@ -242,15 +259,29 @@ import type {SelectProps} from "ant-design-vue";
 import type {DefaultOptionType} from "ant-design-vue/es/vc-cascader";
 import {ArrowRightOutlined} from "@ant-design/icons-vue"
 import {message} from "ant-design-vue";
+import {NFA} from "@/models/NFA"
+import {State} from "@/models/State";
+import {InputItem} from "@/models/InputItem";
+import {NFA2DFA} from "@/utils/NFA2DFA";
 
-const Q_NFA = ref("");
-const T_NFA = ref("");
-const q0_NFA = ref("");
-const F_NFA = ref([]);
+const Q_NFA = ref<string>("");
+const T_NFA = ref<string>("");
+const q0_NFA = ref<string>("");
+const F_NFA = ref<string[]>([]);
 const Q_NFA_option = ref<SelectProps['options']>();
 const T_NFA_option = ref<SelectProps['options']>();
 
-const delta_list_NFA_data = ref<{start: string, state: string, end: string}[]>([]);
+const delta_list_NFA = ref();
+const delta_list_DFA = ref();
+
+export interface DeltaListItem {
+    start: string;
+    input: string;
+    end: string;
+}
+
+const delta_list_NFA_data = ref<DeltaListItem[]>([]);
+const delta_list_DFA_data = ref<DeltaListItem[]>([]);
 //NFA_LIST
 const delta_list_NFA_columns = ref([
     {
@@ -264,9 +295,9 @@ const delta_list_NFA_columns = ref([
         }),
     },
     {
-        title: 'state',
-        dataIndex: 'state',
-        key: 'state',
+        title: 'input',
+        dataIndex: 'input',
+        key: 'input',
         customHeaderCell: () => ({
             style: {
                 textAlign: 'center',  //头部单元格水平居中
@@ -285,9 +316,12 @@ const delta_list_NFA_columns = ref([
     },
 ]);
 
+const nfa:NFA = new NFA();
 
 function QInputChange() {
   const states = Q_NFA.value.split(/[,，]/);
+
+  nfa.states.clear();
 
   let options: DefaultOptionType[] = [];
 
@@ -300,6 +334,8 @@ function QInputChange() {
       label: state,
       value: state
     });
+
+    nfa.states.add(new State(state));
   }
 
   Q_NFA_option.value = options;
@@ -307,6 +343,8 @@ function QInputChange() {
 
 function TInputChange() {
   const terminators = T_NFA.value.split(/[,，]/);
+
+  nfa.inputItems.clear();
 
   let options: DefaultOptionType[] = [];
 
@@ -319,9 +357,90 @@ function TInputChange() {
       label: terminator,
       value: terminator
     });
+
+    nfa.inputItems.add(new InputItem(terminator));
   }
 
   T_NFA_option.value = options;
+}
+
+function q0InputChange(){
+
+
+
+    if(q0_NFA.value!==''){
+        nfa.startState = new State(q0_NFA.value);
+    }
+
+}
+
+function FInputChange(){
+    const FInput:string[] = F_NFA.value;
+
+    nfa.endStates.clear();
+
+    for(let fInput of FInput){
+        if(FInput.length===0){
+            continue;
+        }
+        console.log(fInput);
+        nfa.endStates.add(new State(fInput));
+    }
+    console.log(nfa.endStates);
+
+}
+
+
+function DeltaInputChange(){
+
+    nfa.table.clear();
+
+    const listData = delta_list_NFA_data.value;
+
+    for(let data of listData){
+
+        if(listData.length==0){
+            continue;
+        }
+
+
+        const startState:State = new State(data.start);
+
+        const stateInputItem:InputItem = new InputItem(data.input);
+
+        const endState:State = new State(data.end);
+
+
+
+        const endSet:Set<State> = new Set([endState]);
+
+        const transferMap = new Map<InputItem,Set<State>>([[stateInputItem,endSet]]);
+
+        /*对形如[初态,[输入，[终态集]]集]集*/
+        const temp_nfa_value : Map<InputItem, Set<State>> | undefined= nfa.table.get(startState);
+        console.log("look"+temp_nfa_value);
+        if(temp_nfa_value!==undefined){//如果初态存在，获得[输入，[终态集]]集
+            console.log("Hi")
+            const temp_nfa_value2 :Set<State> | undefined= temp_nfa_value.get(stateInputItem);
+
+            if(temp_nfa_value2!==undefined){//如果输入存在，获得[终态集]
+
+                temp_nfa_value2.add(endState);
+                console.log("we")
+            }
+
+            else{//如果输入不存在，就添加[输入，[终态集]]集
+
+
+                temp_nfa_value.set(stateInputItem,endSet);
+
+            }
+        }
+        else{//如果初态不存在，就新建[初态,[输入，[终态集]]集]集
+            nfa.table.set(startState,transferMap);
+        }
+
+    }
 }
 
 
@@ -331,10 +450,9 @@ function button_addList_NFA_click(){
 
         delta_list_NFA_data.value.push({
             start : '',
-            state : '',
+            input: '',
             end : ''
-        })
-
+        });
 }
 
 function button_delList_NFA_click(){
@@ -345,6 +463,19 @@ function button_delList_NFA_click(){
 
         delta_list_NFA_data.value.pop();
     }
+}
+
+function transfer(){
+
+   //nfa.table.clear();
+
+   console.log(nfa);
+
+   //window.electronAPI.invokeGraphviz(nfa.toDotString());
+
+   console.log(NFA2DFA(nfa));
+
+
 }
 
 </script>
