@@ -15,4 +15,19 @@ export class NFA {
         this.startState = new State("");
         this.endStates = new Set<State>();
     }
+
+    public toDotString() : string {
+        let result = "digraph {\n";
+
+        this.table.forEach((map, state) => {
+            map.forEach((endStates, input) => {
+                for(const endState of endStates) {
+                    result += `  ${state.label} -> ${endState.label} [label=${input.text}]\n`;
+                }
+            });
+        });
+
+        result += "}\n";
+        return result;
+    }
 }
