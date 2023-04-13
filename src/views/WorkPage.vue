@@ -98,15 +98,12 @@
         </a-input>
 
         <a-select v-model:value="F_NFA"
-                  id="F_NFA"
+                  class="F_NFA"
                   :options="Q_NFA_option"
                   mode="multiple"
                   size="large"
-                  style="position: absolute;
-                          width: 170px;
-                          top: 245px;
-                          left: 70px;"
-                  addon-before="F"
+                  :max-tag-count = 2
+
 
         >
         </a-select>
@@ -128,11 +125,21 @@
                   size = "large"
                   @click = "button_addList_NFA_click"
                   style="width : 60px;
-                         top : 34px;
+                         top : 35px;
                          left : 300px"
         >
             +
         </a-button>
+
+          <a-button class="button_delList_NFA"
+                    size = "large"
+                    @click = "button_delList_NFA_click"
+                    style="width : 60px;
+                         top : 35px;
+                         left : 300px"
+          >
+              -
+          </a-button>
 
         <a-table v-model:value="delta_list_NFA"
                  class = "delta_list_NFA"
@@ -183,55 +190,6 @@
 
 
 
-<!--        <a-select v-model:value="delta_start_NFA"
-                  id="delta_start_NFA"
-                  :options="Q_NFA_option"
-
-                  size="large"
-                  placeholder="start"
-
-                  style="
-                        position: absolute;
-                        width: 75px;
-                        top: 35px;
-                        left: 300px;"
-        >
-
-        </a-select>
-
-
-        <a-select v-model:value="delta_sign_NFA"
-                  id="delta_sign_NFA"
-                  :options="T_NFA_option"
-
-                  size="large"
-                  placeholder="sign"
-
-                  style="
-                        position: absolute;
-                        width: 75px;
-                        top: 35px;
-                        left: 375px;"
-        >
-
-        </a-select>
-
-
-        <a-select v-model:value="delta_end_NFA"
-                  id="delta_end_NFA"
-                  :options="Q_NFA_option"
-
-                  size="large"
-                  placeholder="end"
-
-                  style="
-                        position: absolute;
-                        width: 75px;
-                        top: 35px;
-                        left: 450px;"
-        >
-
-        </a-select>-->
 
       </div>
 
@@ -251,7 +209,30 @@
 
 
       </div>
+
+        <a-descriptions bordered
+                        size="small"
+                        :column=2
+
+                        class="description_DFA">
+            <a-descriptions-item label="Q" :span = "1">q1,q2,q3,q4,q5</a-descriptions-item>
+            <a-descriptions-item label="T" :span = "1">q1,q2,q3</a-descriptions-item>
+            <a-descriptions-item label="q0" :span = "1">q0</a-descriptions-item>
+            <a-descriptions-item label="F" :span = "1">q1,q3</a-descriptions-item>
+        </a-descriptions>
     </div>
+
+      <a-button class="transfer"
+                size = "large"
+                @click = "transfer"
+                style="width: 120px;
+                       top:435px;
+                       left: 480px;             "
+                >
+          <template #icon>
+              <ArrowRightOutlined/>
+          </template>
+      </a-button>
   </div>
 </template>
 
@@ -259,11 +240,13 @@
 import {ref} from "vue";
 import type {SelectProps} from "ant-design-vue";
 import type {DefaultOptionType} from "ant-design-vue/es/vc-cascader";
+import {ArrowRightOutlined} from "@ant-design/icons-vue"
+import {message} from "ant-design-vue";
 
 const Q_NFA = ref("");
 const T_NFA = ref("");
 const q0_NFA = ref("");
-const F_NFA = ref("");
+const F_NFA = ref([]);
 const Q_NFA_option = ref<SelectProps['options']>();
 const T_NFA_option = ref<SelectProps['options']>();
 
@@ -344,6 +327,8 @@ function TInputChange() {
 
 function button_addList_NFA_click(){
 
+        message.success("Add transformation successfully");
+
         delta_list_NFA_data.value.push({
             start : '',
             state : '',
@@ -351,6 +336,17 @@ function button_addList_NFA_click(){
         })
 
 }
+
+function button_delList_NFA_click(){
+    if (delta_list_NFA_data.value.length===0){
+        message.error("List is empty");
+    }
+    else{
+
+        delta_list_NFA_data.value.pop();
+    }
+}
+
 </script>
 
 <style  scoped>
@@ -431,58 +427,23 @@ function button_addList_NFA_click(){
   left: 0;
 }
 
-
-
-
-
-
-
-
-:deep(.ant-select-selection--multiple .ant-select-selection__rendered) {
-    margin-left: 5px;
-    margin-bottom: -3px;
-    height: auto;
-    width: 100px;
-    max-height: 30px;
-    max-width: 200px;
-    overflow: auto;
-    overflow-y: hidden;
-}
-:deep(.ant-select-selection--multiple .ant-select-selection__choice ){
-    overflow: initial;
+.F_NFA {
+    position: absolute;
+    width: 170px;
+    top: 245px;
+    left: 70px;
 }
 
-:deep(.ant-select ul,
-.ant-select ol ){
-    display: flex;
-}
-.ant-select-selection--multiple > ul > li,
-.ant-select-selection--multiple .ant-select-selection__rendered > ul > li {
-    margin-top: 3px;
-    height: 22px;
-    line-height: 22px;
-    font-size: 14px;
-    width: auto;
-    max-height: 200px;
-}
-:deep(.ant-select-search--inline .ant-select-search__field__wrap){
-    max-width: 0 !important;
-}
-:deep(.ant-select-selection__rendered::-webkit-scrollbar){
+.description_DFA{
 
-    height: 5px;
+    position:absolute;
+    top:435px ;
+    width:380px ;
+    left: 120px;
+    /*max-height: 100px;
+    max-width: 380px;*/
 }
-:deep(.ant-select-selection__rendered::-webkit-scrollbar-thumb ){
 
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    background: lightskyblue;
-}
-:deep(.ant-select-selection__rendered::-webkit-scrollbar-track ){
 
-    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, .1);
-    border-radius: 10px;
-    background: #ededed;
-}
 
 </style>
