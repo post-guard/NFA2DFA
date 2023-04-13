@@ -1,5 +1,6 @@
-import {app, BrowserWindow} from 'electron'
+import {app, BrowserWindow, ipcMain} from 'electron'
 import * as path from "path";
+import {RunGraphviz} from "./Graphviz";
 
 function createMainWindow() {
     const window = new BrowserWindow({
@@ -37,4 +38,17 @@ app.on('window-all-closed', () => {
    if(process.platform !== 'darwin') {
        app.quit();
    }
+});
+
+ipcMain.handle("invokeGraphviz", (e, data) => {
+    console.log(data);
+    return {
+        imgBuffer: undefined,
+        isSuccess: false,
+        message: "test"
+    };
+});
+
+ipcMain.handle("ping", (e, data) => {
+    return `ping ${data}`;
 });

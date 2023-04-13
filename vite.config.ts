@@ -17,6 +17,12 @@ export default defineConfig({
                 onstart(options) {
                     options.reload();
                 }
+            },
+            {
+                entry: 'electron/Graphviz.ts',
+                onstart(options) {
+                    options.reload();
+                }
             }
         ])
     ],

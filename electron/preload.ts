@@ -1,6 +1,12 @@
-import {contextBridge} from 'electron';
+import {contextBridge, ipcRenderer} from "electron";
 
 contextBridge.exposeInMainWorld('electronAPI', {
-    hello: "Hello from Electron!",
+    invokeGraphviz: async (dotString: string) => {
+        return await ipcRenderer.invoke("invokeGraphviz", dotString);
+    },
+    ping: async (value: string) => {
+        return await ipcRenderer.invoke("ping", value);
+    }
 });
+
 
