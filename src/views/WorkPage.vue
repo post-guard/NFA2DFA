@@ -1,264 +1,261 @@
 <template>
-  <div class="workPage">
+    <div class="workPage">
 
-    <div class="NFABox">
+        <div class="NFABox">
 
-      <div class="NFADivideLine">
-        <a-divider style="border-color: #181818">
-          <h2>
-            NFA
-          </h2>
+            <div class="NFADivideLine">
+                <a-divider style="border-color: #181818">
+                    <h2>
+                        NFA
+                    </h2>
 
-        </a-divider>
-      </div>
+                </a-divider>
+            </div>
 
-      <div class="verticalDivider_up">
-        <a-divider type="vertical" style="border-color: #181818;height: 360px;">
+            <div class="verticalDivider_up">
+                <a-divider type="vertical" style="border-color: #181818;height: 360px;">
 
-        </a-divider>
-      </div>
+                </a-divider>
+            </div>
 
-      <div class="verticalDivider_down">
-        <a-divider type="vertical" style="border-color: #181818;height: 360px;">
+            <div class="verticalDivider_down">
+                <a-divider type="vertical" style="border-color: #181818;height: 360px;">
 
-        </a-divider>
-      </div>
+                </a-divider>
+            </div>
 
-      <div class="NFAInput">
-        <a-input v-model:value="Q_NFA"
-                 id="Q_NFA"
+            <div class="NFAInput">
+                <a-input v-model:value="Q_NFA"
+                         id="Q_NFA"
 
-                 placeholder="eg: q0,q1,..."
-                 size="large"
-                 allow-clear
-                 addon-before="Q"
-                 @change="QInputChange"
-                 style="
+                         placeholder="eg: q0,q1,..."
+                         size="large"
+                         allow-clear
+                         addon-before="Q"
+                         @change="QInputChange"
+                         style="
                         position: absolute;
                         width: 200px;
                         top: 35px;
                         left: 40px;"
-        >
-        </a-input>
+                >
+                </a-input>
 
-        <a-input v-model:value="T_NFA"
-                 id="T_NFA"
+                <a-input v-model:value="T_NFA"
+                         id="T_NFA"
 
-                 placeholder="eg: a,b,..."
-                 size="large"
-                 allow-clear
-                 addon-before="T"
-                 @change="TInputChange"
-                 style="
+                         placeholder="eg: a,b,..."
+                         size="large"
+                         allow-clear
+                         addon-before="T"
+                         @change="TInputChange"
+                         style="
                         position: absolute;
                         width: 200px;
                         top: 105px;
                         left: 40px;"
-        >
-        </a-input>
+                >
+                </a-input>
 
-        <a-input
-            size="large"
-            :disabled=true
-            addon-before="q0"
-            style="
+                <a-input
+                        size="large"
+                        :disabled=true
+                        addon-before="q0"
+                        style="
                         position: absolute;
                         width: 0;
                         top: 175px;
                         left: 40px;"
-        >
-        </a-input>
+                >
+                </a-input>
 
-        <a-select v-model:value="q0_NFA"
-                  id="q0_NFA"
-                  :options="Q_NFA_option"
+                <a-select v-model:value="q0_NFA"
+                          id="q0_NFA"
+                          :options="Q_NFA_option"
 
-                  size="large"
-                  @change="q0InputChange"
-                  addon-before="q0"
-                  style="
+                          size="large"
+                          @change="q0InputChange"
+                          addon-before="q0"
+                          style="
                         position: absolute;
                         width: 165px;
                         top: 175px;
                         left: 75px;"
-        >
-        </a-select>
+                >
+                </a-select>
 
 
-        <a-input
-            size="large"
-            :disabled=true
-            addon-before="F"
-            style="
+                <a-input
+                        size="large"
+                        :disabled=true
+                        addon-before="F"
+                        style="
                         position: absolute;
                         width: 0;
                         top: 245px;
                         left: 40px;"
-        >
-        </a-input>
+                >
+                </a-input>
 
-        <a-select v-model:value="F_NFA"
-                  class="F_NFA"
-                  :options="Q_NFA_option"
-                  mode="multiple"
-                  size="large"
-                  :max-tag-count = 2
-                  @change="FInputChange"
+                <a-select v-model:value="F_NFA"
+                          class="F_NFA"
+                          :options="Q_NFA_option"
+                          mode="multiple"
+                          size="large"
+                          :max-tag-count=2
+                          @change="FInputChange"
 
-        >
-        </a-select>
+                >
+                </a-select>
 
 
-        <a-input
-            size="large"
-            :disabled=true
-            addon-before="δ"
-            style="
+                <a-input
+                        size="large"
+                        :disabled=true
+                        addon-before="δ"
+                        style="
                         position: absolute;
                         width: 0;
                         top: 35px;
                         left: 270px;"
-        >
-        </a-input>
+                >
+                </a-input>
 
-        <a-button class="button_addList_NFA"
-                  size = "large"
-                  @click = "button_addList_NFA_click"
-                  style="width : 60px;
+                <a-button class="button_addList_NFA"
+                          size="large"
+                          @click="button_addList_NFA_click"
+                          style="width : 60px;
                          top : 35px;
                          left : 300px"
-        >
-            +
-        </a-button>
+                >
+                    +
+                </a-button>
 
-          <a-button class="button_delList_NFA"
-                    size = "large"
-                    @click = "button_delList_NFA_click"
-                    style="width : 60px;
+                <a-button class="button_delList_NFA"
+                          size="large"
+                          @click="button_delList_NFA_click"
+                          style="width : 60px;
                          top : 35px;
                          left : 300px"
-          >
-              -
-          </a-button>
+                >
+                    -
+                </a-button>
 
-        <a-table v-model:value="delta_list_NFA"
-                 class = "delta_list_NFA"
-                 size="large"
-                 :data-source="delta_list_NFA_data"
-                 :columns="delta_list_NFA_columns"
-                 :scroll="{ y: 125 }"
-                 :pagination=false
+                <a-table v-model:value="delta_list_NFA"
+                         class="delta_list_NFA"
+                         size="large"
+                         :data-source="delta_list_NFA_data"
+                         :columns="delta_list_NFA_columns"
+                         :scroll="{ y: 125 }"
+                         :pagination=false
 
-                 style="width: 240px;
+                         style="width: 240px;
                         height: 0;
                         top : 65px;
                         left: 270px;
                         margin: 0"
-        >
-            <template #bodyCell="{column,record}">
-
-                <a-select
-                        placeholder = "A"
-                        v-if = "column.key === 'start'"
-                        v-model:value = "record.start"
-                        :options = "Q_NFA_option"
-                        @change="DeltaInputChange"
                 >
-                </a-select>
+                    <template #bodyCell="{column,record}">
 
-                <a-select
-                        placeholder = "2"
-                        v-if = "column.key === 'input'"
-                        v-model:value = "record.input"
-                        :options = "T_NFA_option"
-                        @change="DeltaInputChange"
-                >
-                </a-select>
+                        <a-select
+                                placeholder="A"
+                                v-if="column.key === 'start'"
+                                v-model:value="record.start"
+                                :options="Q_NFA_option"
+                                @change="DeltaInputChange"
+                        >
+                        </a-select>
 
-                <a-select
-                        placeholder = "B"
-                        v-if = "column.key === 'end'"
-                        v-model:value = "record.end"
-                        :options = "Q_NFA_option"
-                        @change="DeltaInputChange"
-                >
-                </a-select>
+                        <a-select
+                                placeholder="2"
+                                v-if="column.key === 'input'"
+                                v-model:value="record.input"
+                                :options="T_NFA_option"
+                                @change="DeltaInputChange"
+                        >
+                        </a-select>
 
-            </template>
+                        <a-select
+                                placeholder="B"
+                                v-if="column.key === 'end'"
+                                v-model:value="record.end"
+                                :options="Q_NFA_option"
+                                @change="DeltaInputChange"
+                        >
+                        </a-select>
 
-        </a-table>
-
-
-
-
-
-
-
-
-      </div>
-
-
-    </div>
-
-    <div class="DFABox">
-
-      <div class="DFADivideLine">
-        <a-divider style="border-color: #181818 ">
-          <h2>
-            DFA
-          </h2>
-
-        </a-divider>
-
-
-
-      </div>
-
-        <a-descriptions bordered
-                        size="small"
-                        :column=2
-                        class="description_DFA">
-            <a-descriptions-item label="Q" :span = "1"
-                                 v-model:value="Q_DFA"
-            >{{Q_DFA}}</a-descriptions-item>
-            <a-descriptions-item label="T" :span = "1"
-                                 v-model:value="T_DFA"
-            >{{T_DFA}}</a-descriptions-item>
-            <a-descriptions-item label="q0" :span = "1"
-                                 v-model:value="q0_DFA"
-            >{{q0_DFA}}</a-descriptions-item>
-            <a-descriptions-item label="F" :span = "1"
-                                 v-model:value="F_DFA"
-            >{{F_DFA}}</a-descriptions-item>
-            <a-descriptions-item label="δ" :span = "2">
-
-                <a-table v-model:value="delta_list_DFA"
-                         class = "delta_list_DFA"
-                         size="large"
-                         :data-source="delta_list_DFA_data"
-                         :columns="delta_list_NFA_columns"
-                         :scroll="{ y: 100 }"
-                         :pagination=false
-                         >
+                    </template>
 
                 </a-table>
 
-            </a-descriptions-item>
-        </a-descriptions>
-    </div>
 
-      <a-button class="transfer"
-                size = "large"
-                @click = "transfer"
-                style="width: 120px;
+            </div>
+
+
+        </div>
+
+        <div class="DFABox">
+
+            <div class="DFADivideLine">
+                <a-divider style="border-color: #181818 ">
+                    <h2>
+                        DFA
+                    </h2>
+
+                </a-divider>
+
+
+            </div>
+
+            <a-descriptions bordered
+                            size="small"
+                            :column=2
+                            class="description_DFA">
+                <a-descriptions-item label="Q" :span="1"
+                                     v-model:value="Q_DFA"
+                >{{ Q_DFA }}
+                </a-descriptions-item>
+                <a-descriptions-item label="T" :span="1"
+                                     v-model:value="T_DFA"
+                >{{ T_DFA }}
+                </a-descriptions-item>
+                <a-descriptions-item label="q0" :span="1"
+                                     v-model:value="q0_DFA"
+                >{{ q0_DFA }}
+                </a-descriptions-item>
+                <a-descriptions-item label="F" :span="1"
+                                     v-model:value="F_DFA"
+                >{{ F_DFA }}
+                </a-descriptions-item>
+                <a-descriptions-item label="δ" :span="2">
+
+                    <a-table v-model:value="delta_list_DFA"
+                             class="delta_list_DFA"
+                             size="large"
+                             :data-source="delta_list_DFA_data"
+                             :columns="delta_list_NFA_columns"
+                             :scroll="{ y: 100 }"
+                             :pagination=false
+                    >
+
+                    </a-table>
+
+                </a-descriptions-item>
+            </a-descriptions>
+        </div>
+
+        <a-button class="transfer"
+                  size="large"
+                  @click="transfer"
+                  style="width: 120px;
                        top:435px;
                        left: 480px;"
-                >
-          <template #icon>
-              <ArrowRightOutlined/>
-          </template>
-      </a-button>
-  </div>
+        >
+            <template #icon>
+                <ArrowRightOutlined/>
+            </template>
+        </a-button>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -332,72 +329,72 @@ const delta_list_NFA_columns = ref([
     },
 ]);
 
-const nfa:NFA = new NFA();
-let dfa:DFA = new DFA();
+const nfa: NFA = new NFA();
+let dfa: DFA = new DFA();
 
 function QInputChange() {
-  const states = Q_NFA.value.split(/[,，]/);
+    const states = Q_NFA.value.split(/[,，]/);
 
-  nfa.states.clear();
+    nfa.states.clear();
 
-  let options: DefaultOptionType[] = [];
+    let options: DefaultOptionType[] = [];
 
-  for (let state of states) {
-    if (state.length == 0) {
-      continue;
+    for (let state of states) {
+        if (state.length == 0) {
+            continue;
+        }
+
+        options.push({
+            label: state,
+            value: state
+        });
+
+        nfa.states.add(new State(state));
     }
 
-    options.push({
-      label: state,
-      value: state
-    });
-
-    nfa.states.add(new State(state));
-  }
-
-  Q_NFA_option.value = options;
+    Q_NFA_option.value = options;
 }
 
 function TInputChange() {
-  const terminators = T_NFA.value.split(/[,，]/);
+    const terminators = T_NFA.value.split(/[,，]/);
 
-  nfa.inputItems.clear();
+    nfa.inputItems.clear();
 
-  let options: DefaultOptionType[] = [];
+    let options: DefaultOptionType[] = [];
 
-  for (let terminator of terminators) {
-    if (terminator.length == 0) {
-      continue;
+    for (let terminator of terminators) {
+        if (terminator.length == 0) {
+            continue;
+        }
+
+        options.push({
+            label: terminator,
+            value: terminator
+        });
+
+        nfa.inputItems.add(new InputItem(terminator));
     }
 
-    options.push({
-      label: terminator,
-      value: terminator
-    });
-
-    nfa.inputItems.add(new InputItem(terminator));
-  }
-
-  T_NFA_option.value = options;
+    T_NFA_option.value = options;
 }
 
-function q0InputChange(){
-
-
-
-    if(q0_NFA.value!==''){
-        nfa.startState = new State(q0_NFA.value);
+function q0InputChange() {
+    if (q0_NFA.value != '') {
+        for (const state of nfa.states) {
+            if (state.label == q0_NFA.value) {
+                nfa.startState = state;
+            }
+        }
     }
-
 }
 
-function FInputChange(){
-    const FInput:string[] = F_NFA.value;
+function FInputChange() {
+    const FInput: string[] = F_NFA.value;
 
     nfa.endStates.clear();
 
-    for(let fInput of FInput){
-        if(FInput.length===0){
+    for (let fInput of FInput) {
+        if (FInput.length === 0) {
             continue;
         }
         console.log(fInput);
@@ -408,38 +405,38 @@ function FInputChange(){
 }
 
 
-function DeltaInputChange(){
+function DeltaInputChange() {
 
     nfa.table.clear();
 
     const listData = delta_list_NFA_data.value;
 
-    for(let data of listData){
+    for (let data of listData) {
 
-        if(listData.length==0){
+        if (listData.length == 0) {
             break;
         }
 
 
-        let startState:State = new State('');
-        for(let value of nfa.states){
-            if(value.label===data.start){
+        let startState: State = new State('');
+        for (let value of nfa.states) {
+            if (value.label === data.start) {
                 startState = value;
                 break;
             }
         }
 
         let stateInputItem = new InputItem('');
-        for(let value of nfa.inputItems){
-            if(value.text===data.input){
+        for (let value of nfa.inputItems) {
+            if (value.text === data.input) {
                 stateInputItem = value;
                 break;
             }
         }
 
         let endState = new State('');
-        for(let value of nfa.states){
-            if(value.label===data.end){
+        for (let value of nfa.states) {
+            if (value.label === data.end) {
                 endState = value;
                 break;
             }
@@ -447,71 +444,67 @@ function DeltaInputChange(){
 
         const endSet = new Set([endState]);
 
-        const transferMap = new Map<InputItem,Set<State>>([[stateInputItem,endSet]]);
+        const transferMap = new Map<InputItem, Set<State>>([[stateInputItem, endSet]]);
 
         /*对形如[初态,[输入，[终态集]]集]集*/
-        const temp_nfa_value : Map<InputItem, Set<State>> | undefined = nfa.table.get(startState);
+        const temp_nfa_value: Map<InputItem, Set<State>> | undefined = nfa.table.get(startState);
         //console.log("look"+temp_nfa_value);
-        if(temp_nfa_value!==undefined){//如果初态存在，获得[输入，[终态集]]集
+        if (temp_nfa_value !== undefined) {//如果初态存在，获得[输入，[终态集]]集
 
-            const temp_nfa_value2 :Set<State> | undefined= temp_nfa_value.get(stateInputItem);
+            const temp_nfa_value2: Set<State> | undefined = temp_nfa_value.get(stateInputItem);
 
-            if(temp_nfa_value2!==undefined){//如果输入存在，获得[终态集]
+            if (temp_nfa_value2 !== undefined) {//如果输入存在，获得[终态集]
 
                 temp_nfa_value2.add(endState);
 
-            }
+            } else {//如果输入不存在，就添加[输入，[终态集]]集
 
-            else{//如果输入不存在，就添加[输入，[终态集]]集
-
-                temp_nfa_value.set(stateInputItem,endSet);
+                temp_nfa_value.set(stateInputItem, endSet);
 
             }
-        }
-        else{//如果初态不存在，就新建[初态,[输入，[终态集]]集]集
-            nfa.table.set(startState,transferMap);
+        } else {//如果初态不存在，就新建[初态,[输入，[终态集]]集]集
+            nfa.table.set(startState, transferMap);
         }
 
     }
 }
 
 
-function button_addList_NFA_click(){
+function button_addList_NFA_click() {
 
-        message.success("Add transformation successfully");
+    message.success("Add transformation successfully");
 
-        delta_list_NFA_data.value.push({
-            start : '',
-            input: '',
-            end : ''
-        });
+    delta_list_NFA_data.value.push({
+        start: '',
+        input: '',
+        end: ''
+    });
 }
 
-function button_delList_NFA_click(){
-    if (delta_list_NFA_data.value.length===0){
+function button_delList_NFA_click() {
+    if (delta_list_NFA_data.value.length === 0) {
         message.error("List is empty");
-    }
-    else{
+    } else {
         delta_list_NFA_data.value.pop();
     }
 }
 
-async function transfer(){
+async function transfer() {
 
-   console.log(nfa);
+    console.log(nfa);
 
-   await window.electronAPI.invokeGraphviz(nfa.toDotString());
+    await window.electronAPI.invokeGraphviz(nfa.toDotString());
 
-   dfa = NFA2DFA(nfa);
+    dfa = NFA2DFA(nfa);
 
-   console.log(dfa);
+    console.log(dfa);
 
-   arrangeDFA();
+    arrangeDFA();
 
 }
 
 
-function arrangeDFA(){
+function arrangeDFA() {
 
     Q_DFA.value = '';
     T_DFA.value = '';
@@ -519,14 +512,14 @@ function arrangeDFA(){
     F_DFA.value = '';
 
 
-    for(let state of dfa.states){
-        Q_DFA.value+=(","+state.label);
+    for (let state of dfa.states) {
+        Q_DFA.value += ("," + state.label);
     }
     Q_DFA.value = Q_DFA.value.substring(1);
 
 
-    for(let state of dfa.inputItems){
-        T_DFA.value+=(","+state.text);
+    for (let state of dfa.inputItems) {
+        T_DFA.value += ("," + state.text);
     }
     T_DFA.value = T_DFA.value.substring(1);
 
@@ -534,8 +527,8 @@ function arrangeDFA(){
     q0_DFA.value = dfa.startState.label;
 
 
-    for(let state of dfa.endStates){
-        F_DFA.value+=(","+state.label);
+    for (let state of dfa.endStates) {
+        F_DFA.value += ("," + state.label);
     }
     F_DFA.value = F_DFA.value.substring(1);
 
@@ -544,20 +537,20 @@ function arrangeDFA(){
     let delta_list_DFA_input = '';
     let delta_list_DFA_end = '';
 
-    dfa.table.forEach((value, start, map)=>{
+    dfa.table.forEach((value, start, map) => {
 
         delta_list_DFA_start = start.label;
 
-        value.forEach((end,InputItem,map2)=>{
+        value.forEach((end, InputItem, map2) => {
 
             delta_list_DFA_input = InputItem.text;
 
             delta_list_DFA_end = end.label;
 
             delta_list_DFA_data.value.push({
-                start : delta_list_DFA_start,
+                start: delta_list_DFA_start,
                 input: delta_list_DFA_input,
-                end : delta_list_DFA_input
+                end: delta_list_DFA_end
             });
 
 
@@ -567,87 +560,86 @@ function arrangeDFA(){
     })
 
 
-
 }
 
 </script>
 
-<style  scoped>
+<style scoped>
 .workPage {
-  position: absolute;
-  width: 1080px;
-  height: 720px;
+    position: absolute;
+    width: 1080px;
+    height: 720px;
 
 
 }
 
 .NFABox {
-  position: absolute;
-  width: 540px;
-  height: 720px;
-  top: 0;
-  left: 0;
+    position: absolute;
+    width: 540px;
+    height: 720px;
+    top: 0;
+    left: 0;
 
 }
 
 .NFADivideLine {
 
 
-  position: absolute;
+    position: absolute;
 
-  width: 540px;
-  height: 40px;
-  top: 360px;
-  left: 0;
+    width: 540px;
+    height: 40px;
+    top: 360px;
+    left: 0;
 
 }
 
 .DFABox {
-  position: absolute;
-  width: 540px;
-  height: 720px;
-  top: 0;
-  left: 540px;
+    position: absolute;
+    width: 540px;
+    height: 720px;
+    top: 0;
+    left: 540px;
 
 }
 
 .DFADivideLine {
 
 
-  position: absolute;
+    position: absolute;
 
-  width: 540px;
-  height: 40px;
-  top: 360px;
-  left: 0;
+    width: 540px;
+    height: 40px;
+    top: 360px;
+    left: 0;
 
 }
 
 .verticalDivider_up {
-  position: absolute;
+    position: absolute;
 
-  height: 340px;
-  width: 20px;
-  top: 20px;
-  left: 530px;
+    height: 340px;
+    width: 20px;
+    top: 20px;
+    left: 530px;
 }
 
 .verticalDivider_down {
-  position: absolute;
+    position: absolute;
 
-  height: 340px;
-  width: 20px;
-  top: 360px;
-  left: 530px;
+    height: 340px;
+    width: 20px;
+    top: 360px;
+    left: 530px;
 }
 
 .NFAInput {
-  position: absolute;
+    position: absolute;
 
-  height: 320px;
-  width: 540px;
-  top: 400px;
-  left: 0;
+    height: 320px;
+    width: 540px;
+    top: 400px;
+    left: 0;
 }
 
 .F_NFA {
@@ -657,16 +649,15 @@ function arrangeDFA(){
     left: 70px;
 }
 
-.description_DFA{
+.description_DFA {
 
-    position:absolute;
-    top:435px ;
-    width:380px ;
+    position: absolute;
+    top: 435px;
+    width: 380px;
     left: 120px;
     /*max-height: 100px;
     max-width: 380px;*/
 }
-
 
 
 </style>
