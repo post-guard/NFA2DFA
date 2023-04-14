@@ -400,37 +400,52 @@ function DeltaInputChange(){
     for(let data of listData){
 
         if(listData.length==0){
-            continue;
+            break;
         }
 
 
-        const startState:State = new State(data.start);
+        let startState:State = new State('');
+        for(let value of nfa.states){
+            if(value.label===data.start){
+                startState = value;
+                break;
+            }
+        }
 
-        const stateInputItem:InputItem = new InputItem(data.input);
+        let stateInputItem = new InputItem('');
+        for(let value of nfa.inputItems){
+            if(value.text===data.input){
+                stateInputItem = value;
+                break;
+            }
+        }
 
-        const endState:State = new State(data.end);
+        let endState = new State('');
+        for(let value of nfa.states){
+            if(value.label===data.end){
+                endState = value;
+                break;
+            }
+        }
 
-
-
-        const endSet:Set<State> = new Set([endState]);
+        const endSet = new Set([endState]);
 
         const transferMap = new Map<InputItem,Set<State>>([[stateInputItem,endSet]]);
 
         /*对形如[初态,[输入，[终态集]]集]集*/
-        const temp_nfa_value : Map<InputItem, Set<State>> | undefined= nfa.table.get(startState);
-        console.log("look"+temp_nfa_value);
+        const temp_nfa_value : Map<InputItem, Set<State>> | undefined = nfa.table.get(startState);
+        //console.log("look"+temp_nfa_value);
         if(temp_nfa_value!==undefined){//如果初态存在，获得[输入，[终态集]]集
-            console.log("Hi")
+
             const temp_nfa_value2 :Set<State> | undefined= temp_nfa_value.get(stateInputItem);
 
             if(temp_nfa_value2!==undefined){//如果输入存在，获得[终态集]
 
                 temp_nfa_value2.add(endState);
-                console.log("we")
+
             }
 
             else{//如果输入不存在，就添加[输入，[终态集]]集
-
 
                 temp_nfa_value.set(stateInputItem,endSet);
 
@@ -460,21 +475,17 @@ function button_delList_NFA_click(){
         message.error("List is empty");
     }
     else{
-
         delta_list_NFA_data.value.pop();
     }
 }
 
-function transfer(){
-
-   //nfa.table.clear();
+async function transfer(){
 
    console.log(nfa);
 
-   //window.electronAPI.invokeGraphviz(nfa.toDotString());
+   await window.electronAPI.invokeGraphviz(nfa.toDotString());
 
    console.log(NFA2DFA(nfa));
-
 
 }
 

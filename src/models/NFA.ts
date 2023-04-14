@@ -30,4 +30,7 @@ export class NFA {
         result += "}\n";
         return result;
     }
+
+
+
 }
