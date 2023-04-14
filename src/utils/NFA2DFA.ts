@@ -139,5 +139,4 @@ export function NFA2DFA(nfa: NFA): DFA {
     }
 
     return dfa;
-
 }
