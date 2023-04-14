@@ -218,10 +218,18 @@
                         size="small"
                         :column=2
                         class="description_DFA">
-            <a-descriptions-item label="Q" :span = "1"></a-descriptions-item>
-            <a-descriptions-item label="T" :span = "1"></a-descriptions-item>
-            <a-descriptions-item label="q0" :span = "1"></a-descriptions-item>
-            <a-descriptions-item label="F" :span = "1"></a-descriptions-item>
+            <a-descriptions-item label="Q" :span = "1"
+                                 v-model:value="Q_DFA"
+            >{{Q_DFA}}</a-descriptions-item>
+            <a-descriptions-item label="T" :span = "1"
+                                 v-model:value="T_DFA"
+            >{{T_DFA}}</a-descriptions-item>
+            <a-descriptions-item label="q0" :span = "1"
+                                 v-model:value="q0_DFA"
+            >{{q0_DFA}}</a-descriptions-item>
+            <a-descriptions-item label="F" :span = "1"
+                                 v-model:value="F_DFA"
+            >{{F_DFA}}</a-descriptions-item>
             <a-descriptions-item label="δ" :span = "2">
 
                 <a-table v-model:value="delta_list_DFA"
@@ -260,6 +268,7 @@ import type {DefaultOptionType} from "ant-design-vue/es/vc-cascader";
 import {ArrowRightOutlined} from "@ant-design/icons-vue"
 import {message} from "ant-design-vue";
 import {NFA} from "@/models/NFA"
+import {DFA} from "@/models/DFA"
 import {State} from "@/models/State";
 import {InputItem} from "@/models/InputItem";
 import {NFA2DFA} from "@/utils/NFA2DFA";
@@ -270,6 +279,13 @@ const q0_NFA = ref<string>("");
 const F_NFA = ref<string[]>([]);
 const Q_NFA_option = ref<SelectProps['options']>();
 const T_NFA_option = ref<SelectProps['options']>();
+
+
+const Q_DFA = ref<string>("");
+const T_DFA = ref<string>("");
+const q0_DFA = ref<string>("");
+const F_DFA = ref<string>("");
+
 
 const delta_list_NFA = ref();
 const delta_list_DFA = ref();
@@ -317,6 +333,7 @@ const delta_list_NFA_columns = ref([
 ]);
 
 const nfa:NFA = new NFA();
+let dfa:DFA = new DFA();
 
 function QInputChange() {
   const states = Q_NFA.value.split(/[,，]/);
@@ -485,7 +502,71 @@ async function transfer(){
 
    await window.electronAPI.invokeGraphviz(nfa.toDotString());
 
-   console.log(NFA2DFA(nfa));
+   dfa = NFA2DFA(nfa);
+
+   console.log(dfa);
+
+   arrangeDFA();
+
+}
+
+
+function arrangeDFA(){
+
+    Q_DFA.value = '';
+    T_DFA.value = '';
+    q0_DFA.value = '';
+    F_DFA.value = '';
+
+
+    for(let state of dfa.states){
+        Q_DFA.value+=(","+state.label);
+    }
+    Q_DFA.value = Q_DFA.value.substring(1);
+
+
+    for(let state of dfa.inputItems){
+        T_DFA.value+=(","+state.text);
+    }
+    T_DFA.value = T_DFA.value.substring(1);
+
+
+    q0_DFA.value = dfa.startState.label;
+
+
+    for(let state of dfa.endStates){
+        F_DFA.value+=(","+state.label);
+    }
+    F_DFA.value = F_DFA.value.substring(1);
+
+
+    let delta_list_DFA_start = '';
+    let delta_list_DFA_input = '';
+    let delta_list_DFA_end = '';
+
+    dfa.table.forEach((value, start, map)=>{
+
+        delta_list_DFA_start = start.label;
+
+        value.forEach((end,InputItem,map2)=>{
+
+            delta_list_DFA_input = InputItem.text;
+
+            delta_list_DFA_end = end.label;
+
+            delta_list_DFA_data.value.push({
+                start : delta_list_DFA_start,
+                input: delta_list_DFA_input,
+                end : delta_list_DFA_input
+            });
+
+
+        })
+
+
+    })
+
+
 
 }
 
