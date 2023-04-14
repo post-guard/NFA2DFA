@@ -5,115 +5,137 @@ import Queue from "@/utils/Queue";
 import type {InputItem} from "@/models/InputItem";
 
 /**
- * 比较两个状态集合是否相等
- * @param set1 集合1
- * @param set2 集合2
+ * 从状态集合生成表示状态集合的字符串
+ * @param set 需要生成的状态集合
  */
-function setEquals(set1: Set<State>, set2: Set<State>): boolean {
-    if (set1 == null && set2 == null) {
-        return true;
+function getStatesString(set: Set<State>): string {
+    let result = "";
+    for (const item of set) {
+        result += item.label + ",";
+    }
+    if (result.length >= 2) {
+        result = result.substring(0, result.length - 1);
     }
 
-    if (set1 == null || set2 == null || set1.size != set2.size) {
-        return false;
-    }
-
-    for(const i of set1) {
-        for(const j of set2) {
-            if (i.label != j.label) {
-                return false;
-            }
-        }
-    }
-
-    return true;
+    return "[" + result + "]";
 }
 
+interface Pair {
+    set: Set<State>;
+    state: State;
+}
+
+/**
+ * 从NFA自动机转换成DFA自动机
+ * @param nfa 需要转换的NFA自动机
+ */
 export function NFA2DFA(nfa: NFA): DFA {
     const dfa = new DFA();
-    //NFA的初态就是DFA的初态
-    dfa.startState = nfa.startState;
-    dfa.states.add(dfa.startState);
     //NFA的输入字母表就是DFA的输入字母表
     dfa.inputItems = nfa.inputItems;
 
+    // dfa的第一个状态
     const firstSet = new Set<State>();
-    firstSet.add(dfa.startState);
-    //状态集到状态的映射（因为DFA是一个个状态，而下面算法得到的是一个个状态集）
-    const map = new Map<Set<State>, State>();
-    map.set(firstSet, dfa.startState);
+    firstSet.add(nfa.startState);
+    dfa.startState = new State(getStatesString(firstSet));
+    const queue = new Queue<Pair>();
+    queue.enqueue({
+        set: firstSet,
+        state: dfa.startState
+    });
 
-    const queue = new Queue<Set<State>>();
-    const flagMap = new Map<Set<State>, Number>();
-    queue.enqueue(firstSet);
-    flagMap.set(firstSet, 0);
+    while (!queue.isEmpty()) {
+        const top = queue.peek();
+        if (top != undefined) {
+            dfa.states.add(top.state);
 
-    let i = 0;
-    while (queue.isEmpty()) {
-        let temp = queue.peek();
-        if (temp != undefined) {
-            for(const input of nfa.inputItems) {
-                const nextSet = new Set<State>();
-                for (const s of temp) {
-                    const nextStates = nfa.table.get(s)?.get(input);
-                    if (nextStates != undefined) {
-                        nextStates.forEach((i) => nextSet.add(i));
+            // 判断是否为中止状态
+            let isEndState = false;
+            for(const s of top.set) {
+                for(const endState of nfa.endStates) {
+                    if (s.label == endState.label) {
+                        isEndState = true;
+                        break;
                     }
                 }
 
-                //遍历队列，防止状态集重复
-                let repeated = false;
-                queue.forEach((value) => {
-                    if (setEquals(value, nextSet)) {
-                        repeated = true;
-                    }
-                });
-
-                //不重复且没处理过这个状态集，就把得到的新集合入队
-                if (!repeated && (flagMap.get(nextSet) == undefined || flagMap.get(nextSet) == 0)) {
-                    queue.enqueue(nextSet);
-                    flagMap.set(nextSet, 0);
-
-                    //判定当前状态（集）是否是终态
-                    let isEndState = false;
-                    for(const s of nextSet) {
-                        if (nfa.endStates.has(s)) {
-                            isEndState = true;
-                            break;
-                        }
-                    }
-                    const newState = new State("q" + i);
-                    i++;
-                    dfa.states.add(newState);
-                    if (isEndState) {
-                        dfa.endStates.add(newState);
-                    }
-
-                    map.set(nextSet, newState);
+                if (isEndState) {
+                    break;
                 }
-
-                const set = map.get(temp);
-                if (set != undefined) {
-                    if (dfa.table.get(set) == undefined) {
-                        dfa.table.set(set, new Map<InputItem, State>());
-                    }
-                    const map2 = dfa.table.get(set);
-                    if (map2 != undefined) {
-                        const newState = map.get(nextSet);
-                        if (newState != undefined) {
-                            map2.set(input, newState);
-                        }
-                    }
-                }
-
             }
-        }
 
-        temp = queue.peek();
-        if (temp != undefined) {
-            flagMap.set(temp, 1);
+            if (isEndState) {
+                dfa.endStates.add(top.state);
+            }
+
+
+            for (const input of dfa.inputItems) {
+                const nextStates = new Set<State>();
+                for (const s of top.set) {
+                    const set = nfa.table.get(s)?.get(input);
+                    if (set != undefined) {
+                        set.forEach((i) => {
+                            nextStates.add(i);
+                        });
+                    }
+                }
+
+                // 如果下一个集合是空集就不处理
+                if (nextStates.size != 0) {
+                    let transferMap: Map<InputItem, State>;
+                    const temp = dfa.table.get(top.state);
+                    if (temp != undefined) {
+                        transferMap = temp;
+                    } else {
+                        transferMap = new Map<InputItem, State>();
+                        dfa.table.set(top.state, transferMap);
+                    }
+
+                    const nextStateString = getStatesString(nextStates);
+
+                    // 查找下一个状态是否已经存在
+                    let nextState: State | undefined = undefined;
+                    for (const s of dfa.states) {
+                        const states = s.label.substring(1, s.label.length - 1).split(/,/);
+
+                        let contained = true;
+                        for(const state of nextStates) {
+                            let has = false;
+                            for (const str of states) {
+                                if (state.label == str) {
+                                    has = true;
+                                    break;
+                                }
+                            }
+
+                            if (!has) {
+                                contained = false;
+                                break;
+                            }
+                        }
+
+                        if (contained) {
+                            nextState = s;
+                        }
+                    }
+
+                    if (nextState == undefined) {
+                        nextState = new State(nextStateString);
+                        transferMap.set(input, nextState);
+
+                        // 不存在的状态还需要扔到队列中处理
+                        queue.enqueue({
+                            set: nextStates,
+                            state: nextState
+                        });
+                    } else {
+                        transferMap.set(input, nextState);
+                    }
+                }
+            }
+
+            queue.dequeue();
         }
-        queue.dequeue();
     }
 
     return dfa;
