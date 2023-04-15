@@ -3,6 +3,7 @@
 
         <div class="NFABox">
 
+
             <div class="NFADivideLine">
                 <a-divider style="border-color: #181818">
                     <h2>
@@ -22,6 +23,19 @@
                 <a-divider type="vertical" style="border-color: #181818;height: 360px;">
 
                 </a-divider>
+            </div>
+
+            <div class="NFAOutput">
+                <a-image
+                         style="
+                         position : absolute;
+                         left: 90px ;
+                         width : 360px;
+                         height : 360px "
+                         v-model:src="pic_NFA"
+                         >
+
+                </a-image>
             </div>
 
             <div class="NFAInput">
@@ -207,6 +221,20 @@
 
             </div>
 
+            <div class="DFAOutput">
+                <a-image
+                    style="
+                         position : absolute;
+                         left: 90px ;
+                         width : 360px;
+                         height : 360px "
+                    v-model:src="pic_DFA"
+                >
+
+                </a-image>
+            </div>
+
+
             <a-descriptions bordered
                             size="small"
                             :column=2
@@ -269,6 +297,7 @@ import {DFA} from "@/models/DFA"
 import {State} from "@/models/State";
 import {InputItem} from "@/models/InputItem";
 import {NFA2DFA} from "@/utils/NFA2DFA";
+import type {IGraphvizPacket} from "@/types/global";
 
 const Q_NFA = ref<string>("");
 const T_NFA = ref<string>("");
@@ -286,6 +315,9 @@ const F_DFA = ref<string>("");
 
 const delta_list_NFA = ref();
 const delta_list_DFA = ref();
+
+const pic_NFA = ref("https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg");
+const pic_DFA = ref("https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg");
 
 export interface DeltaListItem {
     start: string;
@@ -493,7 +525,25 @@ async function transfer() {
 
     console.log(nfa);
 
-    await window.electronAPI.invokeGraphviz(nfa.toDotString());
+    const result:IGraphvizPacket = await window.electronAPI.invokeGraphviz(nfa.toDotString());
+    //TODO:待转换正确后需要继续调试
+    if(result.isSuccessful){
+        message.success("transfer successfully");
+
+        if(result.imgBuffer!==undefined){
+            pic_NFA.value = 'data: image/jpeg'+ ';base64,' + result.imgBuffer.toString('base64');
+        }
+
+        else{
+            pic_NFA.value = "https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg"
+        }
+
+
+
+    }
+    else {
+        message.error("transfer failed");
+    }
 
     dfa = NFA2DFA(nfa);
 
@@ -620,7 +670,7 @@ function arrangeDFA() {
 
     height: 340px;
     width: 20px;
-    top: 20px;
+    top: 0;
     left: 530px;
 }
 
