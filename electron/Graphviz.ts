@@ -8,68 +8,65 @@ interface IGraphvizPacket {
     isSuccessful: boolean;
     message: string;
 }
-export function RunGraphviz(dotString: string): IGraphvizPacket {
-    let result: IGraphvizPacket = {
-            imgBuffer: undefined,
-            isSuccessful: false,
-            message: "eeee"
-        };
 
-        fs.mkdtemp(path.join(os.tmpdir(), "graphviz"), (err, folder) => {
-            if (err != null) {
-                result = {
-                    imgBuffer: undefined,
-                    isSuccessful: false,
-                    message: `Create temp directory failed: ${err.message}`
-                };
-                return;
-            } else {
-                // 首先写入dot字符串
-                fs.writeFile(path.join(folder, "input.txt"), dotString, (err) => {
-                   if (err != null) {
-                       result = {
-                           imgBuffer: undefined,
-                           isSuccessful: false,
-                           message: `Write input file failed: ${err.message}`
-                       };
-                       return;
-                   } else {
-                       const dotFile = path.join("lib", process.platform, "dot");
-
-                       child_process.execFile(dotFile, ["-Tpng", path.join(folder, "input.txt"),
-                           "-o", path.join(folder, "output.png")], (err, stdout, stderr) => {
-                           if (err != null) {
-                               result = {
-                                   imgBuffer: undefined,
-                                   isSuccessful: false,
-                                   message: `Run dot failed: ${stderr}`
-                               };
-                               return;
-                           }
-                       });
-
-                       fs.readFile(path.join(folder, "output.ong"), (err, data) => {
-                           if (err != null) {
-                               result = {
-                                   imgBuffer: undefined,
-                                   isSuccessful: false,
-                                   message: `Read output picture failed: ${err.message}`
-                               };
-                               return;
-                           } else {
-                               result = {
-                                   imgBuffer: data,
-                                   isSuccessful: true,
-                                   message: "Generate successful"
-                               };
-                               return;
-                           }
-                       })
-                   }
-                });
-            }
+export async function RunGraphviz(dotString: string): Promise<IGraphvizPacket> {
+    try {
+        console.log("1");
+        const tempFolder = await new Promise<string>((resolve, reject) => {
+            fs.mkdtemp(path.join(os.tmpdir(), "graphviz"), (err, folder) => {
+                if (err != null) {
+                    reject(err);
+                } else {
+                    resolve(folder);
+                }
+            });
         });
 
-        return result;
+        console.log("2");
+        await new Promise<void>((resolve, reject) => {
+            fs.writeFile(path.join(tempFolder, "input.txt"), dotString, (err) => {
+                if (err != null) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+
+        const dotFile = path.join(__dirname, "lib", process.platform, "dot");
+        console.log(dotFile);
+
+        await new Promise<void>((resolve, reject) => {
+           child_process.execFile(dotFile, ["-Tpng", path.join(tempFolder, "input.txt"),
+                        "-o", path.join(tempFolder, "output.png")],
+               (error) => {
+               if (error != null) {
+                   reject(error);
+               } else {
+                   resolve();
+               }
+           });
+        });
+
+        return await new Promise<IGraphvizPacket>((resolve, reject) => {
+            fs.readFile(path.join(tempFolder, "output.png"), (err, data) => {
+                if (err != null) {
+                    reject(err);
+                } else {
+                    resolve({
+                        imgBuffer: data,
+                        isSuccessful: true,
+                        message: "Success!"
+                    });
+                }
+            });
+        });
+    } catch (err) {
+        return {
+            imgBuffer: undefined,
+            isSuccessful: false,
+            message: `${err}`
+        }
+    }
 }
 

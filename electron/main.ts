@@ -40,13 +40,8 @@ app.on('window-all-closed', () => {
    }
 });
 
-ipcMain.handle("invokeGraphviz", (e, data) => {
-    console.log(data);
-    return {
-        imgBuffer: undefined,
-        isSuccess: false,
-        message: "test"
-    };
+ipcMain.handle("invokeGraphviz",  async (e, data) => {
+    return await RunGraphviz(data);
 });
 
 ipcMain.handle("ping", (e, data) => {
