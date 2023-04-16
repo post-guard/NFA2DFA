@@ -27,13 +27,13 @@
 
             <div class="NFAOutput">
                 <a-image
-                         style="
+                        style="
                          position : absolute;
                          left: 90px ;
                          width : 360px;
                          height : 360px "
-                         v-model:src="pic_NFA"
-                         >
+                        v-model:src="pic_NFA"
+                >
 
                 </a-image>
             </div>
@@ -223,12 +223,12 @@
 
             <div class="DFAOutput">
                 <a-image
-                    style="
+                        style="
                          position : absolute;
                          left: 90px ;
                          width : 360px;
                          height : 360px "
-                    v-model:src="pic_DFA"
+                        v-model:src="pic_DFA"
                 >
 
                 </a-image>
@@ -298,6 +298,7 @@ import {State} from "@/models/State";
 import {InputItem} from "@/models/InputItem";
 import {NFA2DFA} from "@/utils/NFA2DFA";
 import type {IGraphvizPacket} from "@/types/global";
+import * as buffer from "buffer";
 
 const Q_NFA = ref<string>("");
 const T_NFA = ref<string>("");
@@ -525,23 +526,20 @@ async function transfer() {
 
     console.log(nfa);
 
-    const result:IGraphvizPacket = await window.electronAPI.invokeGraphviz(nfa.toDotString());
-    //TODO:待转换正确后需要继续调试
-    if(result.isSuccessful){
+    const result: IGraphvizPacket = await window.electronAPI.invokeGraphviz(nfa.toDotString());
+    console.log(result);
+    if (result.isSuccessful) {
         message.success("transfer successfully");
 
-        if(result.imgBuffer!==undefined){
-            pic_NFA.value = 'data: image/jpeg'+ ';base64,' + result.imgBuffer.toString('base64');
-        }
-
-        else{
+        if (result.imgBuffer !== undefined) {
+            const pictureString = String.fromCharCode(...new Uint8Array(result.imgBuffer));
+            pic_NFA.value = "data:image/png;base64," + window.btoa(pictureString);
+        } else {
             pic_NFA.value = "https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg"
         }
 
 
-
-    }
-    else {
+    } else {
         message.error("transfer failed");
     }
 
