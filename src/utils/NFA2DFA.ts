@@ -91,12 +91,15 @@ export function NFA2DFA(nfa: NFA): DFA {
                         dfa.table.set(top.state, transferMap);
                     }
 
-                    const nextStateString = getStatesString(nextStates);
-
                     // 查找下一个状态是否已经存在
                     let nextState: State | undefined = undefined;
                     for (const s of dfa.states) {
                         const states = s.label.substring(1, s.label.length - 1).split(/,/);
+
+                        // 首先判断集合中元素的个数是否相等
+                        if (states.length != nextStates.size) {
+                            continue;
+                        }
 
                         let contained = true;
                         for(const state of nextStates) {
@@ -116,10 +119,12 @@ export function NFA2DFA(nfa: NFA): DFA {
 
                         if (contained) {
                             nextState = s;
+                            break;
                         }
                     }
 
                     if (nextState == undefined) {
+                        const nextStateString = getStatesString(nextStates);
                         nextState = new State(nextStateString);
                         transferMap.set(input, nextState);
 
