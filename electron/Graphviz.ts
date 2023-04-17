@@ -11,7 +11,6 @@ interface IGraphvizPacket {
 
 export async function RunGraphviz(dotString: string): Promise<IGraphvizPacket> {
     try {
-        console.log("1");
         const tempFolder = await new Promise<string>((resolve, reject) => {
             fs.mkdtemp(path.join(os.tmpdir(), "graphviz"), (err, folder) => {
                 if (err != null) {
@@ -22,7 +21,6 @@ export async function RunGraphviz(dotString: string): Promise<IGraphvizPacket> {
             });
         });
 
-        console.log("2");
         await new Promise<void>((resolve, reject) => {
             fs.writeFile(path.join(tempFolder, "input.txt"), dotString, (err) => {
                 if (err != null) {
@@ -33,8 +31,25 @@ export async function RunGraphviz(dotString: string): Promise<IGraphvizPacket> {
             });
         });
 
-        const dotFile = path.join(__dirname, "lib", process.platform, "dot");
-        console.log(dotFile);
+        let dotFile = "";
+        switch (process.platform) {
+            case "win32":
+                dotFile = path.join("lib", process.platform, "dot.exe");
+                break;
+            default:
+                dotFile = path.join("lib", process.platform, "dot");
+        }
+
+        // 初始化dot绘图插件
+        await new Promise<void>((resolve, reject) => {
+           child_process.execFile(dotFile, ["-c"], (error) => {
+               if (error != null) {
+                   reject(error);
+               } else {
+                   resolve();
+               }
+           })
+        });
 
         await new Promise<void>((resolve, reject) => {
            child_process.execFile(dotFile, ["-Tpng", path.join(tempFolder, "input.txt"),

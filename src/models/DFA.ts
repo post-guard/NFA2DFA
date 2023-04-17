@@ -21,7 +21,7 @@ export class DFA {
 
         this.table.forEach((map, state) => {
             map.forEach((endState, input) => {
-               result += `  ${state.label} -> ${endState} [label=${input.text}]\n`;
+               result += `  "${state.label}" -> "${endState.label}" [label=${input.text}]\n`;
             });
         });
 

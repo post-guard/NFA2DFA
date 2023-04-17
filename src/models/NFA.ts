@@ -22,7 +22,7 @@ export class NFA {
         this.table.forEach((map, state) => {
             map.forEach((endStates, input) => {
                 for(const endState of endStates) {
-                    result += `  ${state.label} -> ${endState.label} [label=${input.text}]\n`;
+                    result += `  "${state.label}" -> "${endState.label}" [label=${input.text}]\n`;
                 }
             });
         });
