@@ -526,16 +526,32 @@ async function transfer() {
 
     console.log(nfa);
 
-    const result: IGraphvizPacket = await window.electronAPI.invokeGraphviz(nfa.toDotString());
-    console.log(result);
-    if (result.isSuccessful) {
+    dfa = NFA2DFA(nfa);
+
+    console.log(dfa);
+
+
+    const result_NFA: IGraphvizPacket = await window.electronAPI.invokeGraphviz(nfa.toDotString());
+    const result_DFA: IGraphvizPacket = await window.electronAPI.invokeGraphviz(dfa.toDotString());
+
+    console.log(result_NFA);
+    console.log(result_DFA);
+
+    if (result_NFA.isSuccessful && result_DFA.isSuccessful) {
         message.success("transfer successfully");
 
-        if (result.imgBuffer !== undefined) {
-            const pictureString = String.fromCharCode(...new Uint8Array(result.imgBuffer));
+        if (result_NFA.imgBuffer !== undefined) {
+            const pictureString = String.fromCharCode(...new Uint8Array(result_NFA.imgBuffer));
             pic_NFA.value = "data:image/png;base64," + window.btoa(pictureString);
         } else {
             pic_NFA.value = "https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg"
+        }
+
+        if (result_DFA.imgBuffer !== undefined) {
+            const pictureString = String.fromCharCode(...new Uint8Array(result_DFA.imgBuffer));
+            pic_DFA.value = "data:image/png;base64," + window.btoa(pictureString);
+        } else {
+            pic_DFA.value = "https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg"
         }
 
 
@@ -543,9 +559,9 @@ async function transfer() {
         message.error("transfer failed");
     }
 
-    dfa = NFA2DFA(nfa);
 
-    console.log(dfa);
+
+
 
     arrangeDFA();
 
