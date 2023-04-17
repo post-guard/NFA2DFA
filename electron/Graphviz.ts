@@ -52,8 +52,8 @@ export async function RunGraphviz(dotString: string): Promise<IGraphvizPacket> {
         });
 
         await new Promise<void>((resolve, reject) => {
-           child_process.execFile(dotFile, ["-Tpng", path.join(tempFolder, "input.txt"),
-                        "-o", path.join(tempFolder, "output.png")],
+           child_process.execFile(dotFile, ["-Tsvg", path.join(tempFolder, "input.txt"),
+                        "-o", path.join(tempFolder, "output.svg")],
                (error) => {
                if (error != null) {
                    reject(error);
@@ -64,7 +64,7 @@ export async function RunGraphviz(dotString: string): Promise<IGraphvizPacket> {
         });
 
         return await new Promise<IGraphvizPacket>((resolve, reject) => {
-            fs.readFile(path.join(tempFolder, "output.png"), (err, data) => {
+            fs.readFile(path.join(tempFolder, "output.svg"), (err, data) => {
                 if (err != null) {
                     reject(err);
                 } else {

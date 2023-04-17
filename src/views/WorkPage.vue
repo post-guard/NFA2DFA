@@ -542,14 +542,14 @@ async function transfer() {
 
         if (result_NFA.imgBuffer !== undefined) {
             const pictureString = String.fromCharCode(...new Uint8Array(result_NFA.imgBuffer));
-            pic_NFA.value = "data:image/png;base64," + window.btoa(pictureString);
+            pic_NFA.value = "data:image/svg+xml;base64," + window.btoa(pictureString);
         } else {
             pic_NFA.value = "https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg"
         }
 
         if (result_DFA.imgBuffer !== undefined) {
             const pictureString = String.fromCharCode(...new Uint8Array(result_DFA.imgBuffer));
-            pic_DFA.value = "data:image/png;base64," + window.btoa(pictureString);
+            pic_DFA.value = "data:image/svg+xml;base64," + window.btoa(pictureString);
         } else {
             pic_DFA.value = "https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg"
         }
