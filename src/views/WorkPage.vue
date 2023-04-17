@@ -317,8 +317,8 @@ const F_DFA = ref<string>("");
 const delta_list_NFA = ref();
 const delta_list_DFA = ref();
 
-const pic_NFA = ref("https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg");
-const pic_DFA = ref("https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg");
+const pic_NFA = ref("picture/waiting.svg");
+const pic_DFA = ref("picture/waiting.svg");
 
 export interface DeltaListItem {
     start: string;
@@ -530,6 +530,8 @@ async function transfer() {
 
     console.log(dfa);
 
+    console.log(nfa.toDotString());
+
 
     const result_NFA: IGraphvizPacket = await window.electronAPI.invokeGraphviz(nfa.toDotString());
     const result_DFA: IGraphvizPacket = await window.electronAPI.invokeGraphviz(dfa.toDotString());
@@ -544,19 +546,21 @@ async function transfer() {
             const pictureString = String.fromCharCode(...new Uint8Array(result_NFA.imgBuffer));
             pic_NFA.value = "data:image/svg+xml;base64," + window.btoa(pictureString);
         } else {
-            pic_NFA.value = "https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg"
+            pic_NFA.value = "picture/error.svg"
         }
 
         if (result_DFA.imgBuffer !== undefined) {
             const pictureString = String.fromCharCode(...new Uint8Array(result_DFA.imgBuffer));
             pic_DFA.value = "data:image/svg+xml;base64," + window.btoa(pictureString);
         } else {
-            pic_DFA.value = "https://photo.16pic.com/00/89/83/16pic_8983799_b.jpg"
+            pic_DFA.value = "picture/error.svg"
         }
 
 
     } else {
         message.error("transfer failed");
+        pic_NFA.value = "picture/error.svg";
+        pic_DFA.value = "picture/error.svg";
     }
 
 

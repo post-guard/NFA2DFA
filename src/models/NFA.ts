@@ -19,6 +19,19 @@ export class NFA {
     public toDotString() : string {
         let result = "digraph {\n";
 
+
+        result+="node [shape = plaintext]\n" + "start;\n"
+
+
+        result+="node [shape = doublecircle]\n"
+        this.endStates.forEach((state)=>{
+            result+=`"${state.label}" `;
+        });
+        result += ";\n";
+
+        result += "node [shape = circle]\n";
+        result += `start -> "${this.startState.label}"\n`;
+
         this.table.forEach((map, state) => {
             map.forEach((endStates, input) => {
                 for(const endState of endStates) {
@@ -26,6 +39,8 @@ export class NFA {
                 }
             });
         });
+
+
 
         result += "}\n";
         return result;

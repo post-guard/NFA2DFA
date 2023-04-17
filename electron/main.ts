@@ -4,7 +4,7 @@ import {RunGraphviz} from "./Graphviz";
 
 function createMainWindow() {
     const window = new BrowserWindow({
-        title: "MainWindow",
+        title: "NFA2DFA",
         width: 1080,
         height: 720,
         //这个设置为真时，设置的尺寸将会是不包括菜单栏的窗口大小

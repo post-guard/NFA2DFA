@@ -17,7 +17,19 @@ export class DFA {
     }
 
     public toDotString(): string {
-        let result = "digraph {\n"
+        let result = "digraph {\n";
+
+        result+="node [shape = plaintext]\n" + "start;\n"
+
+
+        result+="node [shape = doublecircle]\n"
+        this.endStates.forEach((state)=>{
+            result+=`"${state.label}" `;
+        });
+        result += ";\n";
+
+        result += "node [shape = circle]\n";
+        result += `start -> "${this.startState.label}"\n`;
 
         this.table.forEach((map, state) => {
             map.forEach((endState, input) => {
