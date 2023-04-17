@@ -92,6 +92,7 @@ export function NFA2DFA(nfa: NFA): DFA {
                     }
 
                     // 查找下一个状态是否已经存在
+                    // 首先在dfa的状态集合中寻找
                     let nextState: State | undefined = undefined;
                     for (const s of dfa.states) {
                         const states = s.label.substring(1, s.label.length - 1).split(/,/);
@@ -121,6 +122,35 @@ export function NFA2DFA(nfa: NFA): DFA {
                             nextState = s;
                             break;
                         }
+                    }
+
+                    // 在dfa的状态集合中寻找没有找到
+                    // 再在队列中寻找
+                    if (nextState == undefined) {
+                        queue.forEach(pair => {
+                            let contained  = pair.set.size == nextStates.size;
+
+                            for(const state of nextStates) {
+                                    let has = false;
+
+                                    for(const s of pair.set) {
+                                        if (s.label == state.label) {
+                                            has = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!has) {
+                                        contained = false;
+                                        break;
+                                    }
+                                }
+
+                            if (contained) {
+                                nextState = pair.state;
+                                return;
+                            }
+                        });
                     }
 
                     if (nextState == undefined) {
