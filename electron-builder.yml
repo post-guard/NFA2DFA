@@ -9,14 +9,14 @@ extraResources:
   - from: "lib/"
     to: "./app/dist-electron/lib/"
 linux:
-  icon: picture/ico.png
+  icon: public/ico.ico
   target:
     - zip
 win:
-  icon: picture/ico.png
+  icon: public/ico.ico
   target:
     - zip
 mac:
-  icon: picture/ico.png
+  icon: public/ico.icns
   target:
     - zip
