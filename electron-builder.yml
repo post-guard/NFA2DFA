@@ -1,0 +1,22 @@
+appId: top.rrricardo.nfa2dfa
+asar: false
+directories:
+  output: release/${version}
+files:
+  - dist-electron
+  - dist
+extraResources:
+  - from: "lib/"
+    to: "./app/dist-electron/lib/"
+linux:
+  icon: picture/ico.png
+  target:
+    - zip
+win:
+  icon: picture/ico.png
+  target:
+    - zip
+mac:
+  icon: picture/ico.png
+  target:
+    - zip

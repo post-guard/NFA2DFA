@@ -34,10 +34,10 @@ export async function RunGraphviz(dotString: string): Promise<IGraphvizPacket> {
         let dotFile = "";
         switch (process.platform) {
             case "win32":
-                dotFile = path.join("lib", process.platform, "dot.exe");
+                dotFile = path.join(__dirname, "lib", process.platform, "dot.exe");
                 break;
             default:
-                dotFile = path.join("lib", process.platform, "dot");
+                dotFile = path.join(__dirname, "lib", process.platform, "dot");
         }
 
         // 初始化dot绘图插件
